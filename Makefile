@@ -6,16 +6,22 @@
 ##
 
 # Project configuration
-PROJECT_NAME	:=	"MyProject"
+PROJECT_NAME	:=	"BetterLibMy"
 PROJECT_AUTHORS	:=	"Adam CAVILLON"
-PROJECT_VERSION	:=	"1.0.0"
+PROJECT_VERSION	:=	"3.6.1"
 PROJECT_YEAR	:=	"2022"
-PROJECT_DESC	:=	"An awesome project!"
+PROJECT_DESC	:=	"Just a *better* LibMy"
 
 # Conditional compilation configuration
-COND_COMP_ENABLE_TIME	:=	0
-COND_COMP_ENABLE_STAT	:=	0
-COND_COMP_ENABLE_STDIO	:=	1
+# Use conditional with @conditional[name=KEY, value=VALUE]
+
+# Files
+COND_COMP_INCLUDE_OPEN	:=	1
+COND_COMP_INCLUDE_STAT	:=	1
+
+CC	:= gcc
+ADDTIONAL_FLAGS	:=	-Wall -Wpedantic -Wextra -Werror -Wno-unused-parameter
+HEADERS	:=	$(shell find include -name *.h -type f)
 
 # Variables to pass to Architect
 PROJECT_PARAMS = PROJECT_NAME=$(PROJECT_NAME) \
@@ -25,20 +31,24 @@ PROJECT_PARAMS = PROJECT_NAME=$(PROJECT_NAME) \
 	PROJECT_DESC=$(PROJECT_DESC)
 ARCHITECT_CONDS	:=	$(shell echo "*$(.VARIABLES)" | tr " " "\n" | \
 		grep "COND_COMP_")
-ARCHITECT_PARAMS	:= $(PROJECT_PARAMS) $(foreach v, $(ARCHITECT_CONDS), \
-	$(v)=$(value $(v)))
+ARCHITECT_PARAMS	:= $(PROJECT_PARAMS) ADDTIONAL_FLAGS=$(ADDTIONAL_FLAGS) \
+	$(foreach v, $(ARCHITECT_CONDS), $(v)=$(value $(v)))
 
 all: build
 
 re: fclean all
 
 build:
-	@make -sC architect archi prepare compile $(ARCHITECT_PARAMS)
+	@make -sC architect archi prepare compile $(ARCHITECT_PARAMS)*
+	@ar rc libmy.a build/obj/*.o
+	@mv libmy.a ../libmy.a
+	@cp include/*.h ../../include
 
 clean:
 	@make -sC architect archi clean $(ARCHITECT_PARAMS)
 
-fclean: clean
+fclean:
 	@make -sC architect archi fclean $(ARCHITECT_PARAMS)
+	@rm -f ../libmy.a
 
 .PHONY: all re build clean fclean

@@ -8,6 +8,8 @@ if [ -z "$1" ] || [ -z "$2" ]; then
     exit 1
 fi
 
+echo "Copying sources using '$1' with value '$2'"
+
 for file in $(find src -name "*.c"); do
     conditional=$(cat $file | grep "conditional")
     if [ ! -z "$conditional" ]; then

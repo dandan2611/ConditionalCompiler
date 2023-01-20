@@ -66,8 +66,8 @@ compile:
 	@echo ">>> COMPILE <<<-----------------------------------------------------"
 	@echo "Compiling object files..."
 	@$(foreach f, $(shell find $(BUILD_SRC) -type f -name "*.c" | tr " " "\n"),\
-		$(CC) -c $(f) -o $(BUILD_OBJ)/$(shell basename $(f) | \
-			sed "s/.c/.o/g") \
+		$(CC) -c $(f) -o $(BUILD_OBJ)/$(shell basename $(f) $(ADDTIONAL_FLAGS) \
+			| sed "s/.c/.o/g") \
 			-I${INCLUDE_DIR}; \
 	)
 	@find $(BUILD_OBJ) -type f -name "*.o" | wc -l | \
