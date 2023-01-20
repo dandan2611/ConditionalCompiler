@@ -26,7 +26,7 @@ PROJECT_PARAMS = PROJECT_NAME=$(PROJECT_NAME) \
 ARCHITECT_CONDS	:=	$(shell echo "*$(.VARIABLES)" | tr " " "\n" | \
 		grep "COND_COMP_")
 ARCHITECT_PARAMS	:= $(PROJECT_PARAMS) $(foreach v, $(ARCHITECT_CONDS), \
-	$(v)=$(value $(v));)
+	$(v)=$(value $(v)))
 
 all: build
 
